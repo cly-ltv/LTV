@@ -1,9 +1,19 @@
 // All page copy, links and data live here. Edit this file, then run `node build.mjs`.
 // Plain text only (the build escapes it). Compliance review: CR-8966
-// (https://ltvco.atlassian.net/browse/CR-8966). Do not add scores, star ratings,
-// "tested" / "we ranked" claims or pricing without Compliance sign-off.
+// (https://ltvco.atlassian.net/browse/CR-8966). Scores and order are our subjective opinion:
+// never describe them as tested or as a methodology. No pricing, no negative statements about
+// any service, and no changes to disclosure / ownership / FCRA text without Compliance sign-off.
 
 export const LANDING = 'https://www.beenverified.com/lp/596a06/1/landing';
+
+// OPEN ITEM: scores are placeholders. Each service's `score` is below; the label comes from these
+// bands (first match wins) and the filled stars are floor(score / 2 + 0.5) out of 5.
+export const scoreBands = [
+  { min: 9.5, label: 'Outstanding' },
+  { min: 9.0, label: 'Excellent' },
+  { min: 8.5, label: 'Very good' },
+  { min: 0, label: 'Good' },
+];
 
 export const page = {
   title: 'Best reverse phone lookup sites of 2026',
@@ -12,16 +22,20 @@ export const page = {
   updated: 'Updated Oct 28, 2026',
   byline: 'By BeenVerified',
   subhead:
-    "Seven reverse phone lookup services that can help you find out who's calling or texting, and what each one is best for.",
-  searchNote: 'Searches run on BeenVerified. Not for FCRA-regulated purposes.',
+    "Nine reverse phone lookup services that can help you find out who's calling or texting, and what each one is best for.",
+  searchNote: 'Not for FCRA-regulated purposes.',
+  // Expands in place from the hero link. Use exactly as written (CHANGES.md section 5).
   disclosure: {
     label: 'Advertiser disclosure',
-    text: 'This guide is published by BeenVerified. BeenVerified and PeopleLooker are our brands, so we have a financial interest in them. We may also earn a commission from other services listed. Our picks are editorial and based on publicly available information about each service.',
+    paragraphs: [
+      'Many, but not all, of the websites listed on this page are owned and operated by our company, The Lifetime Value Co. We do not receive any third party referral fees for including listings on this page.',
+      'Any opinions or recommendations expressed on this page are solely those of our company and are not influenced by any third party. Rankings are based on our subjective opinion alone. We do not feature all providers on the market.',
+      'We cannot guarantee that all information provided is necessarily 100% complete, accurate or up to date. The information which appears on this site is subject to change at any time.',
+    ],
   },
   searchPlaceholder: '(555) 555-1234',
   stickyBar: {
     label: "Know who's calling",
-    powered: 'Powered by BeenVerified',
     button: 'Search a number',
   },
 };
@@ -37,14 +51,18 @@ export const toc = [
   { id: 'faq', label: 'FAQ', short: 'FAQ' },
 ];
 
-// Order here is the rank (1-7). Other services link to homepages as placeholders;
-// affiliate / tracking URLs will replace them. OPEN ITEM: competitor logos need legal approval.
+// Order here is the rank (1-9). `ours: true` marks our four brands (links get rel="noopener";
+// competitors get rel="nofollow noopener"; never "sponsored"). Competitor and ReversePhone /
+// NumberGuru links are homepage placeholders. OPEN ITEM: competitor logos need legal approval;
+// key features and table flags for services other than ours are from public sources, unverified.
 export const services = [
   {
     id: 'beenverified',
     name: 'BeenVerified',
     logo: 'assets/beenverified.svg',
     href: LANDING,
+    score: 9.8,
+    ours: true,
     topPick: true,
     bestFor: 'Best for all-in-one search',
     picks: [
@@ -52,17 +70,11 @@ export const services = [
       'Reports can include owner name, carrier and line type',
       'iOS and Android apps for lookups on the go',
     ],
-    pros: [
+    keyFeatures: [
       'Search by phone, name, email, address or VIN under one membership',
       "Phone reports can show the owner's name, carrier, line type and location when records exist",
       'Mobile app makes it easy to look up a number right after a missed call',
       'Reports link out to related people, past addresses and emails',
-    ],
-    cons: [
-      'Standard plans cap reports each month',
-      'Trial memberships renew automatically unless canceled',
-      'Newer or prepaid mobile numbers can return limited results',
-      'More data than you need if you only want caller ID',
     ],
     whoFor:
       'People who get unknown calls regularly and want more than a name: past addresses, related contacts and social profiles tied to a number.',
@@ -78,21 +90,18 @@ export const services = [
     name: 'PeopleLooker',
     logo: 'assets/peoplelooker.svg',
     href: 'https://www.peoplelooker.com',
+    score: 9.5,
+    ours: true,
     bestFor: 'Best for straightforward reports',
     picks: [
       'Clean, simple report layout for fast answers',
       'Phone, name and address search in one place',
       'Straightforward results with less clutter',
     ],
-    pros: [
+    keyFeatures: [
       'Clean, simple report layout that is easy to scan',
       'Phone, name and address searches in one place',
       'Fast results on most landline and mobile numbers',
-    ],
-    cons: [
-      'Full reports require a paid membership',
-      'Fewer extras than larger platforms',
-      'No standalone phone-only plan',
     ],
     whoFor: 'People who want a simple answer to who called, without a lot of extra report sections.',
     whyPicked: 'Its reports are shorter and less cluttered than most competitors, which suits one-off lookups.',
@@ -100,25 +109,70 @@ export const services = [
     features: { owner: true, carrier: true, spam: false, app: false, phoneOnly: false },
   },
   {
+    id: 'reversephone',
+    name: 'ReversePhone',
+    logo: 'assets/reversephone.png',
+    href: 'https://www.reversephone.com', // placeholder: homepage
+    score: 9.3,
+    ours: true,
+    bestFor: 'Best for focused phone lookups',
+    picks: [
+      'Reverse phone lookup with spam reports and person reports',
+      'Focused on phone numbers, without extra search types',
+      'iPhone and Android apps',
+    ],
+    keyFeatures: [
+      'Reverse phone lookup to identify unknown callers',
+      'Spam reports on numbers',
+      "Person reports with more detail on a number's owner",
+      'iPhone and Android apps',
+    ],
+    whoFor: "People who mainly want to identify a caller or text sender and don't need a broader people-search tool.",
+    whyPicked: 'A phone-focused service with spam reporting and mobile apps. ReversePhone is one of our brands.',
+    privacy: "Searches are confidential. See ReversePhone's privacy policy for how to manage your own information.",
+    features: { owner: true, carrier: true, spam: true, app: true, phoneOnly: true },
+  },
+  {
+    id: 'numberguru',
+    name: 'NumberGuru',
+    logo: 'assets/numberguru.png',
+    href: 'https://www.numberguru.com', // placeholder: homepage
+    score: 9.1,
+    ours: true,
+    bestFor: 'Best for caller ID and spam blocking',
+    picks: [
+      'Reverse phone and text lookup',
+      'Caller ID and spam-blocking app for iPhone and Android',
+      'Premium reports also cover people, email and property searches',
+    ],
+    keyFeatures: [
+      'Reverse phone and text-message sender lookup',
+      'Caller ID and spam blocking in its mobile app',
+      'Premium reports for people, email and property searches',
+      'Long-running phone lookup app, launched in 2011',
+    ],
+    whoFor: 'People who want caller ID and spam blocking in an app, with optional deeper reports when they need them.',
+    whyPicked: 'A long-running phone lookup app with built-in spam blocking. NumberGuru is one of our brands.',
+    privacy: 'Searches are confidential. NumberGuru offers an opt-out process for your own information; see its privacy policy.',
+    features: { owner: true, carrier: true, spam: true, app: true, phoneOnly: false },
+  },
+  {
     id: 'spokeo',
     name: 'Spokeo',
     logo: 'assets/spokeo.png',
     href: 'https://www.spokeo.com',
+    score: 9.0,
+    ours: false,
     bestFor: 'Best value for frequent lookups',
     picks: [
       'Search by phone, email, name or address',
       'Free preview before you commit to a report',
       'Good for occasional, lower-volume lookups',
     ],
-    pros: [
+    keyFeatures: [
       'Affordable membership, with multi-month discounts',
       'Search by phone, email, name or address',
       'Free search shows a basic preview before you pay',
-    ],
-    cons: [
-      'Reports are capped at a monthly limit',
-      'PDF downloads require an add-on',
-      'Results on newer mobile numbers can be thin',
     ],
     whoFor: 'Budget-minded people who check several numbers a month.',
     whyPicked: 'It offers one of the most affordable full people-search memberships, and phone searches are included.',
@@ -130,21 +184,18 @@ export const services = [
     name: 'TruthFinder',
     logo: 'assets/truthfinder.png',
     href: 'https://www.truthfinder.com',
+    score: 8.8,
+    ours: false,
     bestFor: 'Best phone-only plan',
     picks: [
       'Dedicated reverse-phone plan, separate from full membership',
       'Unlimited phone reports on that plan',
       'Optional people-search upgrade available',
     ],
-    pros: [
+    keyFeatures: [
       'Dedicated reverse phone plan available separately from the full membership',
       'Unlimited phone reports on that plan',
       'Optional people-search upgrade if you need more',
-    ],
-    cons: [
-      'People search, email and PDFs are separate paid plans or add-ons',
-      'Upsells appear throughout the search flow',
-      'Phone plan does not include full background reports',
     ],
     whoFor: "People who only want to identify callers and don't need full reports.",
     whyPicked: 'Its phone-only plan is the cheapest paid way to run unlimited reverse lookups in this list.',
@@ -156,21 +207,18 @@ export const services = [
     name: 'Intelius',
     logo: 'assets/intelius.png',
     href: 'https://www.intelius.com',
+    score: 8.7,
+    ours: false,
     bestFor: 'Best for mixed landline and mobile',
     picks: [
       'Covers landline, mobile and VoIP numbers',
       'Can bundle phone and people search',
       'Large, long-running public-record base',
     ],
-    pros: [
+    keyFeatures: [
       'Covers landlines and mobile numbers',
       'Plans can be bundled by search type',
       'Long-running service with a large record base',
-    ],
-    cons: [
-      'Plan tiers are confusing to compare',
-      'More expensive than most picks',
-      'PDF downloads require an add-on',
     ],
     whoFor: 'People who need both phone and address lookups in one plan.',
     whyPicked:
@@ -183,21 +231,18 @@ export const services = [
     name: 'Whitepages Premium',
     logo: 'assets/whitepages.png',
     href: 'https://www.whitepages.com',
+    score: 8.5,
+    ours: false,
     bestFor: 'Best for caller ID and spam alerts',
     picks: [
       'Caller ID and spam-alert mobile app',
       'The longest-running name in phone directories',
       'Lighter weight than full background-report sites',
     ],
-    pros: [
+    keyFeatures: [
       'The longest-running name in phone directories',
       'Caller ID and spam-alert app',
       'Easy to get started with Premium',
-    ],
-    cons: [
-      'Free results are very limited',
-      'Background-style data requires an upgrade',
-      'Less depth than full people-search sites',
     ],
     whoFor: 'People who mainly want to screen calls as they come in.',
     whyPicked:
@@ -210,21 +255,18 @@ export const services = [
     name: 'Instant Checkmate',
     logo: 'assets/instant-checkmate.png',
     href: 'https://www.instantcheckmate.com',
+    score: 8.4,
+    ours: false,
     bestFor: 'Best for add-on background reports',
     picks: [
       'Phone search hands off into fuller background reports',
       'Separate standalone reverse-phone plan available',
       'Clear, easy-to-follow report layout',
     ],
-    pros: [
+    keyFeatures: [
       'Detailed people reports alongside phone search',
       'Separate standalone phone plan',
       'Clear report layout',
-    ],
-    cons: [
-      'Among the most expensive full memberships',
-      'Premium reports are a separate purchase',
-      'Phone plan is separate from the full membership',
     ],
     whoFor: "People who expect a phone lookup to turn into a fuller look at someone's public records.",
     whyPicked: "Its phone search hands off cleanly into longer reports when one number isn't enough context.",
@@ -236,7 +278,7 @@ export const services = [
 export const picksSection = {
   title: 'Our top picks at a glance',
   introBefore:
-    'Seven services that can help identify an unknown caller, and what each is best for. See each full review below, or jump to a ',
+    'Nine services that can help identify an unknown caller, ranked by our own opinion (see the advertiser disclosure). See each full review below, or jump to a ',
   introLinkText: 'feature comparison',
   introLinkHref: '#compare',
   introAfter: '.',
@@ -246,10 +288,12 @@ export const picksSection = {
 
 export const reviewsSection = {
   title: 'Full reviews: every service in detail',
-  intro: 'The pros, cons, and who each service actually suits — for anyone who wants more than the quick summary above.',
+  // CHANGES.md section 5 uses a comma here; design/desktop.html has an em dash. CHANGES.md wins.
+  intro:
+    'What each service offers, who it suits, and why we picked it, for anyone who wants more than the quick summary above.',
   goTo: (name) => `Go to ${name}`,
   headings: {
-    prosCons: 'The good and the bad',
+    keyFeatures: 'Key features',
     whoFor: "Who it's for",
     whyPicked: (name) => `Why we picked ${name}`,
     privacy: 'Privacy and opt-out',
@@ -259,6 +303,7 @@ export const reviewsSection = {
 export const compareSection = {
   title: 'Compare features side by side',
   intro: 'Standard paid plan for each service.',
+  scoreHeader: 'Score',
   columns: [
     { key: 'owner', label: 'Owner name' },
     { key: 'carrier', label: 'Carrier / line type' },
@@ -368,11 +413,86 @@ export const guide = {
       type: 'p',
       text: 'Compare a few options against what matters most to you, and check what each one actually includes before you commit — coverage and report depth vary more than the marketing usually suggests.',
     },
+
+    // New in v2: three more sections, each after a thin divider. Compliance will review this wording.
+    { type: 'hr' },
+    { type: 'h2', text: 'Spotting and handling scam and spam calls' },
+    {
+      type: 'p',
+      text: "Most unknown calls are harmless, but spam and scam calls are common enough that it helps to have a simple routine. Scammers often spoof the number on your screen, so a familiar-looking area code, or even a local number, doesn't prove a call is real.",
+    },
+    { type: 'h3', text: 'Common signs of a scam call' },
+    {
+      type: 'ul',
+      items: [
+        "Pressure to act right away, or a threat if you don't",
+        'A request for payment by gift card, wire transfer, cryptocurrency or a payment app',
+        'A request for passwords, PINs or one-time verification codes',
+        "A caller claiming to be a government agency, bank or tech company you didn't contact",
+        'An offer that sounds too good to be true',
+      ],
+    },
+    { type: 'h3', text: 'What to do when an unknown number calls' },
+    {
+      type: 'ul',
+      items: [
+        'Let it go to voicemail. Real callers usually leave a message.',
+        "Don't press numbers or say “yes” to a recorded message.",
+        "Don't share personal or financial information. Hang up and call back using a number from the company's official website or your statement.",
+        'Look up the number before you call back.',
+      ],
+    },
+    { type: 'h3', text: 'Texts from unknown numbers' },
+    {
+      type: 'p',
+      text: "The same rules apply to texts. Don't click links or reply to messages you didn't expect. In the US, you can forward unwanted texts to 7726 (SPAM) to report them to your carrier.",
+    },
+    { type: 'h3', text: 'Blocking and filtering unwanted calls' },
+    {
+      type: 'ul',
+      items: [
+        { b: 'iPhone:', t: " Settings > Phone > Silence Unknown Callers sends calls from numbers that aren't in your contacts to voicemail." },
+        { b: 'Android:', t: " the Phone app's settings usually include caller ID and spam protection and a blocked-numbers list. Exact menus vary by phone." },
+        { b: 'Your carrier:', t: " most major carriers offer free spam-blocking or call-labeling tools. Check your carrier's app or website." },
+        { b: 'National Do Not Call Registry:', t: " registering at donotcall.gov reduces calls from legitimate telemarketers, but it won't stop scammers." },
+      ],
+    },
+    { type: 'h3', text: 'Reporting scam calls' },
+    {
+      type: 'p',
+      parts: [
+        'You can report scam calls and texts to the FTC at ',
+        { href: 'https://reportfraud.ftc.gov/', text: 'ReportFraud.ftc.gov' },
+        '. Reports help investigators spot patterns.',
+      ],
+    },
+
+    { type: 'hr' },
+    { type: 'h2', text: 'Reverse phone lookup vs. caller ID apps' },
+    {
+      type: 'p',
+      text: "Caller ID apps and built-in spam filters flag suspicious calls as they come in, often using reports from other users. A reverse phone lookup works differently: you search for a specific number and see what's available in public and commercial records, such as an owner's name, line type and location.",
+    },
+    {
+      type: 'p',
+      text: 'The two work well together. A spam label tells you to be careful, and a lookup can add context about who the number belongs to.',
+    },
+
+    { type: 'hr' },
+    { type: 'h2', text: 'Managing your own number and information' },
+    {
+      type: 'p',
+      text: 'People-search and phone lookup sites list information from public records, and most let you ask to have your own listing removed. Each site has its own opt-out process, and sister sites sometimes need separate requests.',
+    },
+    {
+      type: 'p',
+      text: "To remove your number from a site, look for an “opt-out” or “Do Not Sell My Personal Information” link in its footer. It's worth checking back after a few weeks, since listings can reappear when records are refreshed.",
+    },
   ],
 };
 
 export const closingBanner = {
-  text: 'Ready to check a number? Run a confidential search with BeenVerified.',
+  text: 'Ready to check a number? Run a confidential search.',
 };
 
 export const learnSection = {
@@ -453,6 +573,22 @@ export const faqSection = {
       q: 'How do I remove my own number?',
       a: 'Each service has its own opt-out form, and sister sites often need separate requests. Our opt-out guide links to each one.',
     },
+    {
+      q: 'Is a reverse phone lookup the same as caller ID?',
+      a: "Not quite. Caller ID shows the name or number your carrier provides. A reverse phone lookup searches records for a number and may add details like an owner's name, line type or location.",
+    },
+    {
+      q: 'Can I block a number after I look it up?',
+      a: "Yes. You can block numbers in your phone's settings or through your carrier. Lookup services don't block calls themselves, though some apps include blocking tools.",
+    },
+    {
+      q: 'What should I do if I get a text from an unknown number?',
+      a: "Don't click links or reply with personal details. You can look up the number first, and forward unwanted texts to 7726 (SPAM) to report them to your carrier.",
+    },
+    {
+      q: 'Why do calls show a number similar to mine?',
+      a: "Scammers often “spoof” caller ID to show a number that looks local or familiar, sometimes called neighbor spoofing, so you're more likely to answer. The number shown may not belong to the caller.",
+    },
   ],
 };
 
@@ -467,7 +603,6 @@ export const sidebar = {
     { icon: 'check', text: 'Millions of public records' },
     { icon: 'shield', text: 'Not a consumer reporting agency' },
   ],
-  powered: 'Powered by BeenVerified',
 };
 
 // Ownership statement and FCRA notice are required: do not remove without Compliance sign-off.
@@ -494,7 +629,7 @@ export const footer = {
   ],
   ownership: {
     label: 'Ownership:',
-    text: ' This site is owned and operated by BeenVerified. BeenVerified and PeopleLooker are our brands. We may receive compensation from other services.',
+    text: ' Many, but not all, of the websites listed on this page are owned and operated by our company, The Lifetime Value Co. We do not receive any third party referral fees for including listings on this page. Rankings are based on our subjective opinion alone.',
   },
   fcra: {
     label: 'FCRA notice:',

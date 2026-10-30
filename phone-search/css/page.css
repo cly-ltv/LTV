@@ -1,8 +1,16 @@
 /* Breakpoints: 1179 (jump nav replaces left TOC), 960 (sidebar hides, sticky search bar appears), 759 (phone). */
 
-*,
-*::before,
-*::after {
+/* The design is content-box except for these elements; keep that so sizes match exactly
+   (a global border-box shrinks the chevrons and indented lists). */
+.wrap,
+.cta-in,
+.content-grid,
+.toc-mobile details,
+.search-hero,
+.search-banner input,
+.sb-form input,
+.pk-logo,
+.card-logo {
   box-sizing: border-box;
 }
 
@@ -73,9 +81,6 @@ h2 {
 }
 .ic-pro {
   fill: var(--pro);
-}
-.ic-con {
-  fill: var(--con);
 }
 .ic-no {
   fill: var(--ink-disabled);
@@ -239,7 +244,6 @@ h2 {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 .search-hero input {
-  box-sizing: content-box; /* the design's hero input is 44px + 2px borders = 48px tall */
   padding: 0 16px;
   border: 2px solid var(--divider);
   font-size: 16px;
@@ -286,6 +290,12 @@ h2 {
   font-size: 13px;
   line-height: 19px;
   color: rgba(255, 255, 255, 0.75);
+}
+.disc-body p {
+  margin: 0 0 8px;
+}
+.disc-body p:last-child {
+  margin-bottom: 0;
 }
 
 /* ---------- summary / chevron (shared) ---------- */
@@ -378,10 +388,6 @@ details[open] > summary .chev {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
   white-space: nowrap;
-}
-.cta-powered {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
 }
 
 .toc-mobile {
@@ -597,10 +603,71 @@ details[open] > summary .chev {
 .pk-list .ic {
   margin-top: 3px;
 }
+.pk-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.pk-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.pk-extra {
+  display: inline-flex;
+}
 .pk-cta {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+
+/* score pill, stars and label (picks, review cards, compare table) */
+.score-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 22px;
+}
+.score-pill span {
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+.stars {
+  display: inline-flex;
+  gap: 2px;
+}
+.star-on {
+  fill: var(--premium);
+}
+.star-off {
+  fill: var(--divider);
+}
+.score-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.card-score {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.card-score-row {
+  display: inline-flex;
+  align-items: center;
   gap: 10px;
 }
 
@@ -714,12 +781,7 @@ details[open] > summary .chev {
 .acc-body p {
   margin: 0;
 }
-.pc {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-}
-.pc ul {
+.kf {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -727,7 +789,7 @@ details[open] > summary .chev {
   flex-direction: column;
   gap: 12px;
 }
-.pc li {
+.kf li {
   display: flex;
   gap: 8px;
   font-size: 15px;
@@ -879,6 +941,9 @@ hr {
   border: 0;
   border-top: 1px solid var(--divider);
   margin: 40px 0 0;
+}
+.guide hr {
+  margin: 40px 0 32px;
 }
 
 /* ---------- learn more ---------- */
@@ -1044,21 +1109,6 @@ hr {
   font-size: 13px;
   color: var(--ink-secondary);
 }
-.sb-powered {
-  border-top: 1px solid var(--divider);
-  padding-top: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.sb-powered img {
-  height: 16px;
-  opacity: 0.5;
-}
-.sb-powered span {
-  font-size: 11px;
-  color: var(--ink-disabled);
-}
 
 /* ---------- footer ---------- */
 .site-footer {
@@ -1115,8 +1165,9 @@ hr {
 
 /* ---------- responsive ---------- */
 @media (max-width: 1179px) {
+  /* flex (as in the design): the inner row shrinks to its content and centers */
   .toc-horizontal {
-    display: block;
+    display: flex;
   }
   .toc-col {
     display: none;
@@ -1136,12 +1187,22 @@ hr {
   .sidebar-col {
     display: none;
   }
+  /* flex (as in the design): the inner row shrinks to its content and centers */
   .sticky-cta {
-    display: block;
+    display: flex;
   }
 }
 
 @media (max-width: 759px) {
+  /* mobile-preview.html uses 16px gutters and a tighter main padding on phones */
+  .wrap,
+  .toc-mobile details {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .content-grid {
+    padding: 24px 16px 48px;
+  }
   .toc-horizontal {
     display: none;
   }
@@ -1156,22 +1217,18 @@ hr {
     min-height: 0;
     flex-wrap: nowrap;
   }
-  .hide-sm {
-    display: none;
-  }
   .h1 {
     font-size: 32px;
     line-height: 38px;
   }
   .cardhead,
-  .pc,
   .how-grid,
   .res-grid,
   .foot {
     grid-template-columns: minmax(0, 1fr);
   }
   .pick {
-    grid-template-columns: 24px 72px minmax(0, 1fr);
+    grid-template-columns: 24px 72px minmax(0, 1fr) auto;
     gap: 10px 12px;
     align-items: center;
     padding: 16px;
@@ -1195,6 +1252,17 @@ hr {
     grid-column: 3;
     grid-row: 1;
   }
+  .pk-side {
+    display: contents;
+  }
+  .pk-score {
+    grid-column: 4;
+    grid-row: 1;
+    align-items: flex-end;
+  }
+  .pk-score .pk-extra {
+    display: none;
+  }
   .pk-list {
     grid-column: 1 / -1;
     grid-row: 2;
@@ -1207,6 +1275,7 @@ hr {
   .pk-cta a {
     width: 100%;
     height: 44px;
+    box-sizing: border-box;
   }
   .search {
     flex-wrap: wrap;

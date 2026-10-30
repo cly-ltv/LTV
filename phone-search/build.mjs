@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import {
   LANDING,
+  scoreBands,
   page,
   toc,
   services,
@@ -27,6 +28,7 @@ const ICONS = {
   cross:
     'M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z',
   minus: 'M19 13H5v-2h14v2z',
+  star: 'M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
   search:
     'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
   phone:
@@ -40,7 +42,18 @@ const icon = (name, size, cls = '', label = '') => {
   return `<svg class="ic ${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" ${a11y}><path d="${ICONS[name]}"/></svg>`;
 };
 
-const external = (href) => (href.startsWith('#') ? '' : ' target="_blank" rel="sponsored nofollow noopener"');
+// Our own brands get rel="noopener"; competitors get "nofollow noopener". Never "sponsored".
+const linkAttrs = (svc) => ` target="_blank" rel="${svc.ours ? 'noopener' : 'nofollow noopener'}"`;
+
+const scoreLabel = (score) => scoreBands.find((b) => score >= b.min).label;
+const scoreText = (score) => score.toFixed(1);
+const scorePill = (score) => `<span class="score-pill">${scoreText(score)}<span>/10</span></span>`;
+// Filled stars out of 5: floor(score / 2 + 0.5).
+const stars = (score, size) => {
+  const filled = Math.floor(score / 2 + 0.5);
+  const star = (i) => icon('star', size, i < filled ? 'star-on' : 'star-off');
+  return `<span class="stars" role="img" aria-label="${scoreText(score)} out of 10">${[0, 1, 2, 3, 4].map(star).join('')}</span>`;
+};
 
 const searchForm = ({ id, cls = '', button, withIcon = false }) => `
 <form role="search" class="search ${cls}" action="${LANDING}" method="get" target="_blank" rel="noopener">
@@ -80,7 +93,7 @@ const hero = `
     </div>
     <details class="disc" id="disclosure">
       <summary class="disc-sum">${esc(page.disclosure.label)}</summary>
-      <div class="disc-body">${esc(page.disclosure.text)}</div>
+      <div class="disc-body">${page.disclosure.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
     </details>
   </div>
 </section>`;
@@ -93,7 +106,6 @@ const nav = `
   <div class="cta-in">
     <div class="cta-left">${icon('phone', 18, 'cta-ic')}<span class="cta-label">${esc(page.stickyBar.label)}</span></div>
     <div class="cta-right">
-      <span class="hide-sm cta-powered">${esc(page.stickyBar.powered)}</span>
       <a href="${LANDING}" target="_blank" rel="noopener" class="btn btn-cta">${icon('search', 16)} ${esc(page.stickyBar.button)}</a>
     </div>
   </div>
@@ -127,7 +139,10 @@ const picks = () => {
           <span class="pk-name">${esc(svc.name)}</span>
           <ul class="pk-list">${svc.picks.map((b) => `<li>${icon('check', 15, 'ic-pro')}<span>${esc(b)}</span></li>`).join('')}</ul>
         </div>
-        <div class="pk-cta"><a href="${svc.href}"${external(svc.href)} class="btn btn-sm">${esc(s.button)}</a></div>
+        <div class="pk-side">
+          <div class="pk-score">${scorePill(svc.score)}<span class="pk-extra">${stars(svc.score, 14)}</span><span class="pk-extra score-label">${esc(scoreLabel(svc.score))}</span></div>
+          <div class="pk-cta"><a href="${svc.href}"${linkAttrs(svc)} class="btn btn-sm">${esc(s.button)}</a></div>
+        </div>
       </div>`;
     })
     .join('');
@@ -146,7 +161,7 @@ const reviews = () => {
     `<details class="acc"${open ? ' open' : ''}><summary class="acc-sum">${esc(title)}<span class="chev" aria-hidden="true"></span></summary><div class="acc-body">${body}</div></details>`;
   const cards = services
     .map((svc, i) => {
-      const li = (t, kind) => `<li>${icon(kind === 'pro' ? 'check' : 'cross', 18, kind === 'pro' ? 'ic-pro' : 'ic-con')}<span>${esc(t)}</span></li>`;
+      const li = (t) => `<li>${icon('check', 18, 'ic-pro')}<span>${esc(t)}</span></li>`;
       return `
     <article id="${svc.id}" class="pcard${svc.topPick ? ' pcard-top' : ''}">
       <div class="cardhead">
@@ -155,12 +170,13 @@ const reviews = () => {
           <div class="card-tags"><span class="card-rank">#${i + 1}</span>${svc.topPick ? `<span class="badge">${esc(picksSection.topPickTag)}</span>` : ''}</div>
           <h3>${esc(svc.name)}</h3>
           <span class="overline">${esc(svc.bestFor)}</span>
-          <div class="card-cta"><a href="${svc.href}"${external(svc.href)} class="btn btn-md">${esc(s.goTo(svc.name))}</a></div>
+          <span class="card-score"><span class="card-score-row">${scorePill(svc.score)}${stars(svc.score, 16)}</span><span class="score-label">${esc(scoreLabel(svc.score))}</span></span>
+          <div class="card-cta"><a href="${svc.href}"${linkAttrs(svc)} class="btn btn-md">${esc(s.goTo(svc.name))}</a></div>
         </div>
       </div>
       ${acc(
-        h.prosCons,
-        `<div class="pc"><ul aria-label="Pros">${svc.pros.map((t) => li(t, 'pro')).join('')}</ul><ul aria-label="Cons">${svc.cons.map((t) => li(t, 'con')).join('')}</ul></div>`,
+        h.keyFeatures,
+        `<ul class="kf">${svc.keyFeatures.map(li).join('')}</ul>`,
         svc.topPick
       )}
       ${acc(h.whoFor, `<p>${esc(svc.whoFor)}</p>`)}
@@ -188,7 +204,7 @@ const compare = () => {
             : `<td>${icon('minus', 18, 'ic-no', 'No')}</td>`
         )
         .join('');
-      return `<tr${svc.topPick ? ' class="row-top"' : ''}><th scope="row">${i + 1}. ${esc(svc.name)}</th>${cells}</tr>`;
+      return `<tr${svc.topPick ? ' class="row-top"' : ''}><th scope="row">${i + 1}. ${esc(svc.name)}</th><td>${scorePill(svc.score)}</td>${cells}</tr>`;
     })
     .join('');
   return `
@@ -197,7 +213,7 @@ const compare = () => {
   <p class="lede">${esc(s.intro)}</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th scope="col">${esc(s.serviceHeader)}</th>${s.columns.map((c) => `<th scope="col">${esc(c.label)}</th>`).join('')}</tr></thead>
+      <thead><tr><th scope="col">${esc(s.serviceHeader)}</th><th scope="col">${esc(s.scoreHeader)}</th>${s.columns.map((c) => `<th scope="col">${esc(c.label)}</th>`).join('')}</tr></thead>
       <tbody>${rows}</tbody>
     </table>
   </div>
@@ -219,6 +235,9 @@ const how = () => `
 const guideSection = () => {
   let bannerCount = 0;
   const inline = (item) => (typeof item === 'string' ? esc(item) : `<strong>${esc(item.b)}</strong>${esc(item.t)}`);
+  // Paragraph parts: plain strings, or { href, text } for an external link.
+  const part = (p) =>
+    typeof p === 'string' ? esc(p) : `<a href="${p.href}" target="_blank" rel="noopener">${esc(p.text)}</a>`;
   const body = guide.blocks
     .map((b) => {
       switch (b.type) {
@@ -227,7 +246,9 @@ const guideSection = () => {
         case 'h3':
           return `<h3>${esc(b.text)}</h3>`;
         case 'p':
-          return `<p>${esc(b.text)}</p>`;
+          return `<p>${b.parts ? b.parts.map(part).join('') : esc(b.text)}</p>`;
+        case 'hr':
+          return '<hr>';
         case 'ul':
           return `<ul>${b.items.map((it) => `<li>${inline(it)}</li>`).join('')}</ul>`;
         case 'banner':
@@ -288,7 +309,6 @@ const sidebarCol = `
         <button type="submit" class="btn btn-sb">${icon('search', 18)} ${esc(sidebar.button)}</button>
       </form>
       <div class="sb-claims">${sidebar.claims.map((c) => `<div>${icon(c.icon, 16, 'ic-blue')} ${esc(c.text)}</div>`).join('')}</div>
-      <div class="sb-powered"><img src="assets/beenverified.svg" alt="BeenVerified"><span>${esc(sidebar.powered)}</span></div>
     </div>
   </div>
 </aside>`;
