@@ -1,0 +1,48 @@
+/* Design tokens from design-system/tokens.json ("BV Phone Search Rankings" v1). */
+:root {
+  /* color */
+  --primary: #0052ff;
+  --primary-dark: #0039b2;
+  --primary-light: #e5eeff;
+  --ink: #0a0b0d;
+  --ink-secondary: #5b616e;
+  --ink-disabled: #929aab;
+  --paper: #ffffff;
+  --bg: #f8f8f8;
+  --divider: #e6e7e9;
+  --input-border: #dcdfe3;
+  --pro: #2e7d32;
+  --con: #dc0015;
+  --premium: #fcc41c;
+  --accent-purple: #4a3b8f;
+
+  /* used by the page design but not listed in tokens.json */
+  --navy-900: #001a4d;
+  --navy-700: #002b80;
+
+  /* type */
+  --font-sans: "Nunito Sans", Lato, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* radius */
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+
+  /* shadow */
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.14);
+  --shadow-4: 0 6px 18px rgba(0, 0, 0, 0.16);
+
+  /* distance sticky bars cover at the top of the viewport; drives scroll-margin-top and the TOC scroll-spy */
+  --sticky-offset: 72px;
+}
