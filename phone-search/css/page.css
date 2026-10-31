@@ -94,7 +94,7 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-pill);
+  border-radius: 8px;
   background: var(--primary);
   color: #fff;
   font-weight: 700;
@@ -140,7 +140,6 @@ h2 {
 }
 .search-hero .btn-search {
   padding: 0 24px;
-  border-radius: 8px;
 }
 .search-hero .btn-search .ic {
   fill: #fff;
@@ -655,7 +654,7 @@ details[open] > summary .chev {
   gap: 2px;
   padding: 4px 12px;
   border-radius: var(--radius-pill);
-  background: var(--primary);
+  background: var(--navy-900);
   color: #fff;
   font-weight: 800;
   font-size: 18px;
@@ -1250,6 +1249,9 @@ hr {
   .res-grid,
   .foot {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .card-cta {
+    justify-content: center;
   }
   .pick {
     grid-template-columns: 24px 72px minmax(0, 1fr) auto;
