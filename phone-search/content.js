@@ -6,6 +6,12 @@
 
 export const LANDING = 'https://www.beenverified.com/lp/596a06/1/landing';
 
+// The phone search forms skip the landing page: on submit, js/page.js opens this loading page
+// with the typed number as `?phone=<base64 of the 10 digits>`
+// (e.g. 6192774081 -> https://www.beenverified.com/lp/596a06/2/loading/2fa779?phone=NjE5Mjc3NDA4MQ==).
+// Non-form links (sticky bar button, BeenVerified "Visit site") still use LANDING.
+export const LOADING = 'https://www.beenverified.com/lp/596a06/2/loading/2fa779';
+
 // OPEN ITEM: scores are placeholders. Each service's `score` is below; the label comes from these
 // bands (first match wins) and the filled stars are floor(score / 2 + 0.5) out of 5.
 export const scoreBands = [

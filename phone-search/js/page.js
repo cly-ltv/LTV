@@ -37,6 +37,26 @@
     });
   }
 
+  // Phone search forms: open the BeenVerified loading page with the number as ?phone=<base64>.
+  // Without JS the form falls back to its action (the landing page).
+  Array.prototype.forEach.call(document.querySelectorAll('form[data-loading-url]'), function (form) {
+    var input = form.querySelector('input');
+    input.addEventListener('input', function () {
+      input.setCustomValidity('');
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var digits = input.value.replace(/\D/g, '');
+      if (digits.length === 11 && digits.charAt(0) === '1') digits = digits.slice(1);
+      if (digits.length !== 10) {
+        input.setCustomValidity('Enter a 10-digit phone number.');
+        input.reportValidity();
+        return;
+      }
+      window.open(form.getAttribute('data-loading-url') + '?phone=' + btoa(digits), '_blank', 'noopener');
+    });
+  });
+
   if (!sections.length) return;
 
   // Immediate feedback on click, ahead of the scroll finishing.

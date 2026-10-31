@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import {
   LANDING,
+  LOADING,
   scoreBands,
   page,
   toc,
@@ -56,7 +57,7 @@ const stars = (score, size) => {
 };
 
 const searchForm = ({ id, cls = '', button, withIcon = false }) => `
-<form role="search" class="search ${cls}" action="${LANDING}" method="get" target="_blank" rel="noopener">
+<form role="search" class="search ${cls}" action="${LANDING}" method="get" target="_blank" rel="noopener" data-loading-url="${LOADING}">
   <label class="sr-only" for="${id}">Phone number</label>
   <input id="${id}" type="tel" inputmode="tel" placeholder="${esc(page.searchPlaceholder)}">
   <button type="submit" class="btn btn-search">${withIcon ? icon('search', 20) + ' ' : ''}${esc(button)}</button>
@@ -303,7 +304,7 @@ const sidebarCol = `
       <p>${esc(sidebar.text)}</p>
     </div>
     <div class="sb-body">
-      <form role="search" action="${LANDING}" method="get" target="_blank" rel="noopener" class="sb-form">
+      <form role="search" action="${LANDING}" method="get" target="_blank" rel="noopener" class="sb-form" data-loading-url="${LOADING}">
         <label class="sr-only" for="sidebar-phone">Phone number</label>
         <input id="sidebar-phone" type="tel" inputmode="tel" placeholder="${esc(page.searchPlaceholder)}">
         <button type="submit" class="btn btn-sb">${icon('search', 18)} ${esc(sidebar.button)}</button>
