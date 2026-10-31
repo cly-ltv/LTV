@@ -41,19 +41,58 @@
   // Without JS the form falls back to its action (the landing page).
   Array.prototype.forEach.call(document.querySelectorAll('form[data-loading-url]'), function (form) {
     var input = form.querySelector('input');
-    input.addEventListener('input', function () {
-      input.setCustomValidity('');
+    var error = form.querySelector('.search-error');
+    // Same rule as BeenVerified's own phone search (phoneUS in their main.js): area code and
+    // exchange start with 2-9 and can't be N11 (211, 311 ... 911), so 123-456-7890 is rejected.
+    var validPhone = /^[2-9](?:[02-9]\d|1[02-9])[2-9](?:[02-9]\d|1[02-9])\d{4}$/;
+    // Like their form: nothing is flagged until the first submit, after which the field is
+    // re-checked on every keystroke (the message appears and clears as the number changes).
+    var checking = false;
+    function validate() {
+      var ok = validPhone.test(input.value.replace(/\D/g, ''));
+      if (ok) {
+        input.removeAttribute('aria-invalid');
+        input.removeAttribute('aria-describedby');
+      } else {
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', error.id);
+      }
+      error.hidden = ok;
+      return ok;
+    }
+    // Format as 619-277-4081 while typing (max 10 digits), keeping the caret next to the same digit.
+    input.addEventListener('input', function (e) {
+      var before = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
+      var digits = input.value.replace(/\D/g, '');
+      // A leading country code is only dropped from pasted text. When typing, a number past 10
+      // digits is simply ignored.
+      var pasted = e && (e.inputType === 'insertFromPaste' || e.inputType === 'insertFromDrop');
+      if (pasted && digits.length === 11 && digits.charAt(0) === '1') {
+        digits = digits.slice(1);
+        before = Math.max(0, before - 1);
+      }
+      digits = digits.slice(0, 10);
+      before = Math.min(before, digits.length);
+      var formatted = digits.replace(/^(\d{3})(\d)/, '$1-$2').replace(/^(\d{3}-\d{3})(\d)/, '$1-$2');
+      if (formatted !== input.value) {
+        var pos = 0;
+        for (var seen = 0; pos < formatted.length && seen < before; pos++) {
+          if (/\d/.test(formatted.charAt(pos))) seen++;
+        }
+        input.value = formatted;
+        input.setSelectionRange(pos, pos);
+      }
+      if (checking) validate();
     });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var digits = input.value.replace(/\D/g, '');
-      if (digits.length === 11 && digits.charAt(0) === '1') digits = digits.slice(1);
-      if (digits.length !== 10) {
-        input.setCustomValidity('Enter a 10-digit phone number.');
-        input.reportValidity();
+      checking = true;
+      if (!validate()) {
+        input.focus();
         return;
       }
-      window.open(form.getAttribute('data-loading-url') + '?phone=' + btoa(digits), '_blank', 'noopener');
+      var phone = input.value.replace(/\D/g, '');
+      window.open(form.getAttribute('data-loading-url') + '?phone=' + btoa(phone), '_blank', 'noopener');
     });
   });
 

@@ -1,5 +1,6 @@
 // Renders content.js into index.html. No dependencies: `node build.mjs`.
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import {
@@ -20,6 +21,9 @@ import {
   sidebar,
   footer,
 } from './content.js';
+
+// Cache-busting hash so browsers never pair a new index.html with an old css/js file.
+const v = (file) => createHash('md5').update(readFileSync(join(dirname(fileURLToPath(import.meta.url)), file))).digest('hex').slice(0, 8);
 
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -59,8 +63,9 @@ const stars = (score, size) => {
 const searchForm = ({ id, cls = '', button, withIcon = false }) => `
 <form role="search" class="search ${cls}" action="${LANDING}" method="get" target="_blank" rel="noopener" data-loading-url="${LOADING}">
   <label class="sr-only" for="${id}">Phone number</label>
-  <input id="${id}" type="tel" inputmode="tel" placeholder="${esc(page.searchPlaceholder)}">
+  <input id="${id}" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="${esc(page.searchPlaceholder)}">
   <button type="submit" class="btn btn-search">${withIcon ? icon('search', 20) + ' ' : ''}${esc(button)}</button>
+  <p class="search-error" id="${id}-error" role="alert" hidden>${esc(page.phoneError)}</p>
 </form>`;
 
 const banner = (text, id) => `
@@ -306,7 +311,8 @@ const sidebarCol = `
     <div class="sb-body">
       <form role="search" action="${LANDING}" method="get" target="_blank" rel="noopener" class="sb-form" data-loading-url="${LOADING}">
         <label class="sr-only" for="sidebar-phone">Phone number</label>
-        <input id="sidebar-phone" type="tel" inputmode="tel" placeholder="${esc(page.searchPlaceholder)}">
+        <input id="sidebar-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="${esc(page.searchPlaceholder)}">
+        <p class="search-error" id="sidebar-phone-error" role="alert" hidden>${esc(page.phoneError)}</p>
         <button type="submit" class="btn btn-sb">${icon('search', 18)} ${esc(sidebar.button)}</button>
       </form>
       <div class="sb-claims">${sidebar.claims.map((c) => `<div>${icon(c.icon, 16, 'ic-blue')} ${esc(c.text)}</div>`).join('')}</div>
@@ -343,8 +349,8 @@ const html = `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/page.css">
+<link rel="stylesheet" href="css/tokens.css?v=${v('css/tokens.css')}">
+<link rel="stylesheet" href="css/page.css?v=${v('css/page.css')}">
 </head>
 <body>
 <div id="top">
@@ -366,7 +372,7 @@ ${sidebarCol}
 </main>
 ${site_footer}
 </div>
-<script src="js/page.js" defer></script>
+<script src="js/page.js?v=${v('js/page.js')}" defer></script>
 </body>
 </html>
 `;

@@ -219,6 +219,7 @@ h2 {
 
 .search {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 .search input,
@@ -258,6 +259,29 @@ h2 {
   border: 2px solid transparent;
   font-size: 15px;
   background: #fff;
+}
+
+/* Invalid phone number: red border plus a message under the input (see js/page.js). */
+.search input[aria-invalid='true'],
+.sb-form input[aria-invalid='true'] {
+  border-color: var(--con);
+}
+.search-error {
+  flex: 0 0 100%;
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--con);
+  text-wrap: balance;
+}
+.search-error[hidden] {
+  display: none;
+}
+.search-hero .search-error {
+  padding: 0 2px 2px;
+}
+.search-banner .search-error {
+  color: #ff9aa6;
 }
 
 /* Advertiser disclosure: expands in place */

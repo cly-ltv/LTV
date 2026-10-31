@@ -39,7 +39,9 @@ export const page = {
       'We cannot guarantee that all information provided is necessarily 100% complete, accurate or up to date. The information which appears on this site is subject to change at any time.',
     ],
   },
-  searchPlaceholder: '(555) 555-1234',
+  searchPlaceholder: 'Enter Phone Number',
+  // Shown under a search bar when the number isn't a valid 10-digit US number (same copy as the BeenVerified search).
+  phoneError: 'Please enter a valid phone number, e.g. (212) 555-6789',
   stickyBar: {
     label: "Know who's calling",
     button: 'Search a number',

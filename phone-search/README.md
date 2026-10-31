@@ -10,7 +10,7 @@ Static page, no dependencies. Open `index.html` through any static server.
 - Run `node build.mjs` to regenerate `index.html` after editing `content.js` or the markup in `build.mjs`. Do not edit `index.html` by hand.
 - Styles: `css/tokens.css` (design tokens) and `css/page.css`. Behavior: `js/page.js` (TOC scroll-spy and the phone TOC dropdown).
 - Scores: edit `score` per service; the label comes from `scoreBands` and the stars are `floor(score / 2 + 0.5)` of 5. Order in `services` is the rank.
-- Phone search forms (hero, two inline banners, sidebar): `js/page.js` opens `LOADING` (`content.js`) in a new tab with `?phone=<base64 of the 10 digits>`. The typed number is sent to BeenVerified. Anything that isn't 10 digits (a leading 1 is dropped) shows a validation message and doesn't submit. Without JS the form falls back to `LANDING`. The sticky bar button and BeenVerified "Visit site" links still go to `LANDING`.
+- Phone search forms (hero, two inline banners, sidebar): `js/page.js` opens `LOADING` (`content.js`) in a new tab with `?phone=<base64 of the 10 digits>`. The typed number is sent to BeenVerified. The bars format the number as `619-277-4081` while typing (max 10 digits). A number that fails BeenVerified's own `phoneUS` rule (10 digits, area code and exchange start with 2-9 and aren't N11, so `123-456-7890` and `911-555-1234` are rejected) gets a red border and the `page.phoneError` message under the input, and doesn't submit. Without JS the form falls back to `LANDING`. The sticky bar button and BeenVerified "Visit site" links still go to `LANDING`.
 - Links: our four brands (`ours: true`) get `rel="noopener"`, competitors get `rel="nofollow noopener"`. Never `sponsored`.
 
 ## Do not change without Compliance sign-off
