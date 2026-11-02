@@ -84,7 +84,7 @@ const tocLinks = (cls, withArrow, key) =>
 
 const header = `
 <header class="site-header">
-  <div class="wrap site-header-in"><img class="site-logo" src="assets/beenverified.svg" alt="${esc(page.headerLogoAlt)}"></div>
+  <div class="wrap site-header-in"><img class="site-logo" src="assets/bestofthemall.png" alt="${esc(page.headerLogoAlt)}"></div>
 </header>`;
 
 const hero = `

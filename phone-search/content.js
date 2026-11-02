@@ -23,7 +23,7 @@ export const scoreBands = [
 
 export const page = {
   title: 'Best reverse phone lookup sites of 2026',
-  headerLogoAlt: 'BeenVerified phone search guide',
+  headerLogoAlt: 'BestofThemAll',
   // OPEN ITEM: hardcoded date.
   updated: 'Updated Oct 28, 2026',
   byline: 'By BeenVerified',
